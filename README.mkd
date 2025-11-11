@@ -35,4 +35,4 @@ Las queries disponen de títulos y comentarios para ir entendiendo el funcionami
 
 La base de datos Sakila es compleja, por lo que aquí puedes encontrar una captura de pantalla sobre cómo se relacionan las tablas entre sí. Te ayudará a entender mejor la lógica detrás de cada query (o consulta). 
 
-![alt text](image.png)
+![alt text](imagen_readme.png)
