@@ -20,7 +20,7 @@ SELECT title, description
 
 SELECT title, length
 	FROM film
-		WHERE length >=120;
+		WHERE length >120;
 
 -- 5. Recupera los nombres de todos los actores.
 SELECT first_name, last_name
@@ -34,7 +34,7 @@ SELECT first_name, last_name
 -- 7. Encuentra los nombres de los actores que tengan un actor_id entre 10 y 20.
 SELECT first_name, last_name, actor_id
 	FROM actor
-		WHERE actor_id BETWEEN 10 AND 20; 
+		WHERE actor_id BETWEEN 10 AND 20; -- Between incluye los dos valores.
     
  -- 8. Encuentra el título de las películas en la tabla film que no sean ni "R" ni "PG-13" en cuanto a su
 -- clasificación.
@@ -54,7 +54,7 @@ SELECT DISTINCT rating
 	FROM film;
 
 -- Query final: 
-SELECT rating, COUNT(film_id) AS quantity
+SELECT rating, COUNT(film_id) AS quantity_films
 	FROM film
 		GROUP BY rating; 
 
@@ -125,7 +125,7 @@ SELECT  c.name AS category, COUNT(r.rental_id) AS rented_films_per_category
 -- 12. Encuentra el promedio de duración de las películas para cada clasificación de la tabla film y
 -- muestra la clasificación junto con el promedio de duración.
 
--- AVG length films / film__rating 
+-- AVG length films / film_rating 
 -- film_ rating | AVG length films
 
 SELECT * 
@@ -139,11 +139,10 @@ SELECT rating, AVG(length) AS AVG_length
     GROUP BY rating; 
     
 -- Query final:
-SELECT rating, ROUND(AVG(length), 0) AS AVG_length
+SELECT rating AS film_rating, ROUND(AVG(length), 0) AS AVG_length  -- Redondeo a 0 para que no salgan los decimales. 
 	FROM film
     GROUP BY rating; 
     
-
 -- 13. Encuentra el nombre y apellido de los actores que aparecen en la película con title "Indian Love".
 SELECT *
 	FROM film;
@@ -197,7 +196,7 @@ SELECT a.actor_id, fa.film_id
 	FROM actor AS a
 		LEFT JOIN film_actor AS fa
 			ON a.actor_id = fa.actor_id
-	WHERE fa.film_id = NULL;     -- No devuelve resultados. No hay actores o actrices que no aparezcan en ningúna película en la tabla film_actor. 
+	WHERE fa.film_id IS NULL;     -- No devuelve resultados. No hay actores o actrices que no aparezcan en ningúna película en la tabla film_actor. 
 
 -- 16. Encuentra el título de todas las películas que fueron lanzadas entre el año 2005 y 2010.
 SELECT *
@@ -253,7 +252,7 @@ SELECT a.first_name, a.last_name, a.actor_id, fa.film_id
 	FROM actor AS a
 		INNER JOIN film_actor AS fa
 			ON a.actor_id = fa.actor_id;
- -- HAVING filtra los grupos creados por la cláusula GROUP BY, después de la agrupación.
+ 
  
  -- Query final: 
 SELECT a.first_name, a.last_name, COUNT(fa.film_id)  AS total_films
@@ -262,13 +261,14 @@ SELECT a.first_name, a.last_name, COUNT(fa.film_id)  AS total_films
 			ON a.actor_id = fa.actor_id
 	GROUP BY a.actor_id
     HAVING COUNT(fa.film_id) > 10; 
-    
+-- La cláusula HAVING solo debe utilizarse para filtrar resultados de funciones de agregación (como COUNT, AVG, SUM) 
+-- después de que se ha aplicado GROUP BY.    
 
 -- 19. Encuentra el título de todas las películas que son "R" y tienen una duración mayor a 2 horas en la
 -- tabla film.
 SELECT title, rating, length
 	FROM film
-		WHERE rating = "R" AND length > 120; 
+		WHERE rating = "R" AND length > 120;  -- No se incluyen las películas de 120. 
 
 -- 20. Encuentra las categorías de películas que tienen un promedio de duración superior a 120 minutos y
 -- muestra el nombre de la categoría junto con el promedio de duración.
@@ -309,7 +309,7 @@ SELECT c.name AS category, f.length AS AVG_length
 			ON f.film_id = fc.film_id
 		INNER JOIN category AS c
 			ON fc.category_id = c.category_id
-	GROUP BY f.length, c.name
+	GROUP BY c.category_id, c.name, f.length
 	HAVING AVG(length)> 120;
             
             
@@ -326,12 +326,13 @@ SELECT *
 SELECT *
 	FROM film_actor; 
     
-SELECT a.first_name, a.last_name, fa.film_id AS quantity_films
+SELECT a.first_name, a.last_name, COUNT(fa.film_id) AS quantity_films
 	FROM actor AS a
 		INNER JOIN film_actor AS fa
 			ON a.actor_id = fa.actor_id
-	GROUP BY a.first_name, a.last_name, fa.film_id
-	HAVING fa.film_id >= 5;
+	GROUP BY a.actor_id  -- Agrupamos por ID por si hay actores/actrices que se llaman igual.
+	HAVING COUNT(fa.film_id) >= 5
+    ORDER BY quantity_films ASC;  -- ordenamos por Q películas para comprobar el resultado y facilitar su lectura.
 	
 
 -- 22. Encuentra el título de todas las películas que fueron alquiladas por más de 5 días. Utiliza una
@@ -370,7 +371,8 @@ SELECT f.title AS film_title, r.rental_id
 			ON f.film_id = i.film_id
 		INNER JOIN rental AS r
 			ON i.inventory_id = r.inventory_id
-	WHERE r.rental_id IN (SELECT r.rental_id -- quito DATEDIFF(r.return_date, r.rental_date) AS rented_days porque la subconsulta solo puede devolver una columna.
+	WHERE r.rental_id IN (SELECT r.rental_id -- Se quita "DATEDIFF(r.return_date, r.rental_date) AS rented_days" porque la subconsulta solo puede devolver una columna con el mismo tipo de dato, en ese caso INT. 
+    -- Se mantiene mismo nombre "r.rental_id" para mejor seguimiento.
 							FROM rental AS r
 								WHERE DATEDIFF(r.return_date, r.rental_date) >5); 
     
@@ -425,10 +427,7 @@ SELECT a.first_name, a.last_name
 											ON fa.actor_id = a.actor_id
 									WHERE c.name = "Horror" )
 		ORDER BY a.last_name;
-		
--- También se podría hacer con LEFT JOIN aislando los NULL (siendo la subconsulta esa obtención de NULL), ya que es podría ser más eficiente:
         
-
 -- 24. Encuentra el título de las películas que son comedias y tienen una duración mayor a 180 minutos en
 -- la tabla film.
 -- title | comedy | length > 180
@@ -457,7 +456,7 @@ SELECT f.film_id, f.title, f.length,fc.category_id, c.name AS category_name
 			ON f.film_id = fc.film_id
 		INNER JOIN category AS c
 			ON fc.category_id = c.category_id
-	HAVING category_name = "Comedy" AND f.length > 180;
+	WHERE category_name = "Comedy" AND f.length > 180;
     
 -- Query final: 
 SELECT f.title, f.length, c.name AS category_name
@@ -466,7 +465,7 @@ SELECT f.title, f.length, c.name AS category_name
 			ON f.film_id = fc.film_id
 		INNER JOIN category AS c
 			ON fc.category_id = c.category_id
-	HAVING category_name = "Comedy" AND f.length > 180;
+	WHERE c.name = "Comedy" AND f.length > 180;   -- No es necesario agrupar. Uso de WHERE para filtrar por filas individuales.
 
 
 -- BONUS: 25.Encuentra todos los actores que han actuado juntos en al menos una película. 
