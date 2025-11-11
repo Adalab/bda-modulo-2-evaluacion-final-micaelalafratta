@@ -4,7 +4,7 @@
 ¡Hola, Adalaber! Lee atentamente qué encontrarás en este repositorio.
 
 ## Contenido del respositorio: 
-Aquí encontrarás los archivos de la evaluación de Micaela Lafratta del Módulo 2: Extraer información de la web y las bases de datos
+Aquí encontrarás los archivos de la evaluación de Micaela Lafratta del Módulo 2: Extraer información de la web y las bases de datos.
 
 ## Archivos:
 Encontrarás el archivo "modulo-2-evaluacion-final-micaelalafratta.sql".
@@ -36,3 +36,8 @@ Las queries disponen de títulos y comentarios para ir entendiendo el funcionami
 La base de datos Sakila es compleja, por lo que aquí puedes encontrar una captura de pantalla sobre cómo se relacionan las tablas entre sí. Te ayudará a entender mejor la lógica detrás de cada query (o consulta). 
 
 ![alt text](imagen_readme.png)
+
+
+
+
+### AÑADIR EN INGLÉS !!!
