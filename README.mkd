@@ -14,22 +14,40 @@ En él, está el ejercicio final completo.
 
 El ejercicio. que evalúa la comprensión y habilidades en relación a SQL, consiste en manejar información de la base de datos Sakila, que simula una tienda de alquiler de películas.  
 
-Contiene tablas como
-film (películas), actor (actores), customer (clientes), rental (alquileres), category (categorías), entre
-otras. 
+Contiene tablas como film (películas), actor (actores), customer (clientes), rental (alquileres), category (categorías), entre otras. 
 
-Estas tablas contienen información sobre películas, actores, clientes, alquileres y más, y se utilizan
-para realizar consultas y análisis de datos. 
+Estas tablas contienen información sobre películas, actores, clientes, alquileres y más, y se utilizan para realizar consultas y análisis de datos. 
 
 Las queries disponen de títulos y comentarios para ir entendiendo el funcionamiento y garantizar la comprensión del ejercicio. 
 
-## Ejemplo de qué encontrarás dentro:
+## Ejemplos de qué encontrarás dentro del ejercicio:
 
------- PONER EJEMPLO DE QUERIES ---------
+Encontrarás queries con, por ejemplo, uso de operadores especiales de filtro o subqueries. Las queries están hechas paso a paso y con comentarios.
 
-### Por ejemplo, 
-
-------- CÓDIGO QUERIES -------
+### Por ejemplo:
+```sql
+SELECT first_name, last_name
+	FROM actor
+		WHERE last_name LIKE '%Gibson%'; 
+        
+```
+```sql
+SELECT a.first_name, a.last_name  
+	FROM actor AS a
+		WHERE a.actor_id NOT IN -- NOT IN: actores que no actuaron
+								(SELECT fa.actor_id    
+									FROM film AS f
+										INNER JOIN film_category AS fc
+											ON f.film_id = fc.film_id
+										INNER JOIN category AS c
+											ON fc.category_id = c.category_id
+										INNER JOIN film_actor AS fa
+											ON  f.film_id = fa.film_id
+										INNER JOIN actor AS a
+											ON fa.actor_id = a.actor_id
+									WHERE c.name = "Horror" )
+		ORDER BY a.last_name;
+```
 
 ## Ayuda:
 
@@ -37,7 +55,67 @@ La base de datos Sakila es compleja, por lo que aquí puedes encontrar una captu
 
 ![alt text](imagen_readme.png)
 
+¡RECUERDA! Debes tener la base de datos Sakila para poder ejecutar las queries. 
+
+-----------------
 
 
+# In English 👇🏽
 
-### AÑADIR EN INGLÉS !!!
+Hello, Adalaber! Please read carefully what you will find in this repository.
+
+## Repository contents: 
+Here you will find the files for Micaela Lafratta's assessment of Module 2: Extracting information from the web and databases.
+
+## Files:
+You will find the file 'modulo-2-evaluacion-final-micaelalafratta.sql'.
+It contains the complete final exercise.
+
+## Structure of the final exercise:
+
+The exercise, which assesses understanding and skills related to SQL, consists of handling information from the Sakila database, which simulates a film rental shop.  
+
+It contains tables such as film (films), actor (actors), customer (customers), rental (rentals), category (categories), among others. 
+
+These tables contain information about films, actors, customers, rentals and more, and are used to perform queries and data analysis. 
+
+The queries have titles and comments to help you understand how they work and ensure you understand the exercise. 
+
+## Examples of what you will find inside the exercise:
+
+You will find queries with, for example, the use of special filter operators or subqueries. The queries are done step by step and with comments.
+
+### For example:
+```sql
+SELECT first_name, last_name
+    FROM actor
+        WHERE last_name LIKE “%Gibson%”; 
+        
+```
+```sql
+SELECT a.first_name, a.last_name  
+    FROM actor AS a
+        WHERE a.actor_id NOT IN -- NOT IN: actors who did not act
+								(SELECT fa.actor_id    
+                                    FROM film AS f
+                                        INNER JOIN film_category AS fc
+                                            ON f.film_id = fc.film_id
+										INNER JOIN category AS c
+                                            ON fc.category_id = c.category_id
+                                        INNER JOIN film_actor AS fa
+                                            ON  f.film_id = fa.film_id
+										INNER JOIN actor AS a
+ON fa.actor_id = a.actor_id
+WHERE c.name = ‘Horror’ )
+ORDER BY a.last_name;
+```
+
+## Help:
+
+The Sakila database is complex, so here is a screenshot showing how the tables relate to each other. It will help you better understand the logic behind each query. 
+
+![alt text](imagen_readme.png) 
+
+REMEMBER! You must have the Sakila database in order to execute the queries. 
+
+Enjoy!
