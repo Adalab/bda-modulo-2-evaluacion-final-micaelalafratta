@@ -1,0 +1,38 @@
+# Léeme:
+## /English below/ 👇🏽
+
+¡Hola, Adalaber! Lee atentamente qué encontrarás en este repositorio.
+
+## Contenido del respositorio: 
+Aquí encontrarás los archivos de la evaluación de Micaela Lafratta del Módulo 2: Extraer información de la web y las bases de datos
+
+## Archivos:
+Encontrarás el archivo "modulo-2-evaluacion-final-micaelalafratta.sql".
+En él, está el ejercicio final completo.
+
+## Estructura del ejercicio final:
+
+El ejercicio. que evalúa la comprensión y habilidades en relación a SQL, consiste en manejar información de la base de datos Sakila, que simula una tienda de alquiler de películas.  
+
+Contiene tablas como
+film (películas), actor (actores), customer (clientes), rental (alquileres), category (categorías), entre
+otras. 
+
+Estas tablas contienen información sobre películas, actores, clientes, alquileres y más, y se utilizan
+para realizar consultas y análisis de datos. 
+
+Las queries disponen de títulos y comentarios para ir entendiendo el funcionamiento y garantizar la comprensión del ejercicio. 
+
+## Ejemplo de qué encontrarás dentro:
+
+------ PONER EJEMPLO DE QUERIES ---------
+
+### Por ejemplo, 
+
+------- CÓDIGO QUERIES -------
+
+## Ayuda:
+
+La base de datos Sakila es compleja, por lo que aquí puedes encontrar una captura de pantalla sobre cómo se relacionan las tablas entre sí. Te ayudará a entender mejor la lógica detrás de cada query (o consulta). 
+
+![alt text](image.png)
