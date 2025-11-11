@@ -370,7 +370,7 @@ SELECT f.title AS film_title, r.rental_id
 			ON f.film_id = i.film_id
 		INNER JOIN rental AS r
 			ON i.inventory_id = r.inventory_id
-	WHERE r.rental_id IN (SELECT r.rental_id -- quito DATEDIFF(r.return_date, r.rental_date) AS rented_days porque la subconsulta solo puede devolver la columna que se utiliza para el filtro.
+	WHERE r.rental_id IN (SELECT r.rental_id -- quito DATEDIFF(r.return_date, r.rental_date) AS rented_days porque la subconsulta solo puede devolver una columna.
 							FROM rental AS r
 								WHERE DATEDIFF(r.return_date, r.rental_date) >5); 
     
@@ -379,6 +379,96 @@ SELECT f.title AS film_title, r.rental_id
 -- "Horror". Utiliza una subconsulta para encontrar los actores que han actuado en películas de la
 -- categoría "Horror" y luego exclúyelos de la lista de actores.
 
+-- actor_name NOT IN horror film
+
+SELECT *
+	FROM film;
+    
+SELECT *
+	FROM film_category;
+    
+SELECT *
+	FROM category; 
+
+SELECT *
+	FROM film_actor; 
+    
+SELECT * 
+	FROM actor;
+    
+ -- Subconsulta:           
+SELECT f.film_id, fc.category_id, c.name, fa.actor_id, a.first_name, a.last_name
+	FROM film AS f
+		INNER JOIN film_category AS fc   -- Usamos INNER porque queremos solo actores que SÍ actuaron en una Horror Film.
+			ON f.film_id = fc.film_id
+		INNER JOIN category AS c
+			ON fc.category_id = c.category_id
+		INNER JOIN film_actor AS fa
+			ON  f.film_id = fa.film_id
+		INNER JOIN actor AS a
+			ON fa.actor_id = a.actor_id
+	WHERE c.name = "Horror" ;
+
+-- Query final: 
+SELECT a.first_name, a.last_name  
+	FROM actor AS a
+		WHERE a.actor_id NOT IN -- NOT IN: actores que no actuaron
+								(SELECT fa.actor_id    
+									FROM film AS f
+										INNER JOIN film_category AS fc
+											ON f.film_id = fc.film_id
+										INNER JOIN category AS c
+											ON fc.category_id = c.category_id
+										INNER JOIN film_actor AS fa
+											ON  f.film_id = fa.film_id
+										INNER JOIN actor AS a
+											ON fa.actor_id = a.actor_id
+									WHERE c.name = "Horror" )
+		ORDER BY a.last_name;
+		
+-- También se podría hacer con LEFT JOIN aislando los NULL (siendo la subconsulta esa obtención de NULL), ya que es podría ser más eficiente:
+        
+
 -- 24. Encuentra el título de las películas que son comedias y tienen una duración mayor a 180 minutos en
 -- la tabla film.
+-- title | comedy | length > 180
 
+SELECT *
+	FROM film;
+    
+SELECT *
+	FROM film_category;
+    
+SELECT *
+	FROM category; 
+    
+  
+SELECT f.film_id, f.title, f.length, fc.film_id, fc.category_id, c.category_id, c.name
+	FROM film AS f
+		INNER JOIN film_category AS fc  
+			ON f.film_id = fc.film_id
+		INNER JOIN category AS c
+			ON fc.category_id = c.category_id;
+            
+
+SELECT f.film_id, f.title, f.length,fc.category_id, c.name AS category_name
+	FROM film AS f
+		INNER JOIN film_category AS fc  
+			ON f.film_id = fc.film_id
+		INNER JOIN category AS c
+			ON fc.category_id = c.category_id
+	HAVING category_name = "Comedy" AND f.length > 180;
+    
+-- Query final: 
+SELECT f.title, f.length, c.name AS category_name
+	FROM film AS f
+		INNER JOIN film_category AS fc  
+			ON f.film_id = fc.film_id
+		INNER JOIN category AS c
+			ON fc.category_id = c.category_id
+	HAVING category_name = "Comedy" AND f.length > 180;
+
+
+-- BONUS: 25.Encuentra todos los actores que han actuado juntos en al menos una película. 
+-- La consulta debe mostrar el nombre y apellido de los actores 
+-- y el número de películas en las que han actuado juntos.
